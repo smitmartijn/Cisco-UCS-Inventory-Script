@@ -16,7 +16,8 @@ param([string]$UCSM = $null,
 		[string]$OutFile = $null,
 		[string]$Password = $null,
 		[string]$Username = $null,
-		[switch]$GeneratePassword)
+		[switch]$GeneratePassword,
+		[string]$CSVFile = $null)
 
 # Import the Cisco UCS PowerTool module
 Import-Module CiscoUcsPS
@@ -1034,11 +1035,57 @@ function GenerateReport()
 	Disconnect-Ucs
 }
 
-Import-Csv ".\ucs-domains.csv" | Foreach {
-	$UCSM = $_."UCS Manager IP"
-	$OutFile = $_."Outfile"
-	$Username = $_."Username"
-	$Password = $_."Encrypted Password"
+
+# If there's no CSVFile input, check for manual input parameters
+if ($CSVFile -eq "")
+{
+	# Prompt for UCSM IP and credentials
+	if ($UCSM -eq "") {
+		$UCSM = Read-Host "Hostname or IP address UCS Manager"
+	}
+	# UCSM is required
+	if ($UCSM -eq "") {
+		Write-Host "Please specify the hostname or IP address of a UCS Manager!"
+		Exit
+	}
+
+	# Gather credentials
+	$UCSCredentials = $null
+	if($Username -eq "" -or $Password -eq "") {
+		$UCSCredentials = $Host.UI.PromptForCredential("UCS Manager Authentication", "Enter UCS Manager Login", "", "")
+	}
+	else {
+		$SecPasswd = ConvertTo-SecureString $Password -AsPlainText -Force
+		$UCSCredentials = New-Object System.Management.Automation.PSCredential ($Username, $SecPasswd)
+	}
+
+	# Prompt for HTML report file output name and path
+	if ($OutFile -eq "") {
+		$OutFile = Read-Host "Enter file name for the HTML output file"
+	}
+	if ($OutFile -eq "") {
+		Write-Host "Please specify output file!"
+		Exit
+	}
 
 	GenerateReport $UCSM $OutFile $Username $Password
+}
+else
+{
+	if (Test-Path $CSVFile)
+	{
+		Import-Csv $CSVFile | Foreach {
+			$UCSM = $_."UCS Manager IP"
+			$OutFile = $_."Outfile"
+			$Username = $_."Username"
+			$Password = $_."Encrypted Password"
+
+			GenerateReport $UCSM $OutFile $Username $Password
+		}
+	}
+	else
+	{
+		Write-Host "CSV File '$CSVFile' does not exist!"
+		Exit
+	}
 }
