@@ -41,7 +41,8 @@ If you're using this script in an automated fashion, it might be useful to log t
 * -LogFile: Destination log file.
 
 ## Example Output
-Before you download and run it yourself, you can check here if this will fit your needs. This example contains the output of a testlab with a simple setup.
+Before you download and run it yourself, you can [check here](http://lostdomain.org/wp-content/uploads/2014/06/UIS-example.html) if this will fit your needs. This example contains the output of a testlab with a simple setup.
+
 
 If there are any changes you’d like to see, more information or other recommendations. Send me a message and I’ll see what I can do to include it!
 
