@@ -17,7 +17,8 @@ param([string]$UCSM = $null,
 		[string]$Password = $null,
 		[string]$Username = $null,
 		[switch]$GeneratePassword,
-		[string]$CSVFile = $null)
+		[string]$CSVFile = $null,
+		[string]$LogFile = $null)
 
 # Import the Cisco UCS PowerTool module
 Import-Module CiscoUcsPS
@@ -32,6 +33,15 @@ if($GeneratePassword.IsPresent)
 	exit;
 }
 
+function WriteLog
+{
+	param ([string]$logstring)
+
+	if($LogFile -ne "") {
+		Add-Content $Logfile -value "[$([DateTime]::Now)] - $logstring"
+	}
+	Write-Host "[$([DateTime]::Now)] - $logstring"
+}
 
 function GenerateReport()
 {
@@ -40,10 +50,8 @@ function GenerateReport()
 				[Parameter(Mandatory=$true)][string]$Username,
 				[Parameter(Mandatory=$true)][string]$Password)
 
-	Write-Host "UCSM: " $UCSM " - OutFile: " $OutFile " - Username: " $Username " - Password: " $Password
-
+	# Generate credentials
 	$UCSCredentials = New-Object -TypeName System.Management.Automation.PSCredential -argumentlist $Username, ($Password | ConvertTo-SecureString)
-
 
 	# Create or empty file
 	New-Item -ItemType file $OutFile -Force | Out-Null
@@ -58,16 +66,16 @@ function GenerateReport()
 	}
 
 	# Connect to the UCS
-	Connect-Ucs -Name $UCSM -Credential $UCSCredentials
+	$ucsc = Connect-Ucs -Name $UCSM -Credential $UCSCredentials
 
 	# Test connection
 	$connected = Get-UcsPSSession
 	if ($connected -eq $null) {
-	    Write-Host "Error connecting to UCS Manager!"
-		Exit
+		WriteLog "Error connecting to UCS Manager!"
+		Return
 	}
 
-	Write-Host "Connected to: ", $UCSM, ", starting inventory collection and outputting to: ", $OutFile
+	WriteLog "Connected to: $UCSM, starting inventory collection and outputting to: $OutFile"
 
 	# Output HTML headers and CSS
 	AddToOutput -txt "<html>"
@@ -1033,8 +1041,11 @@ function GenerateReport()
 
 	# Disconnect
 	Disconnect-Ucs
+
+	WriteLog "Done generating report for $UCSM"
 }
 
+WriteLog "Starting Cisco UCS Inventory Script (UIS).."
 
 # If there's no CSVFile input, check for manual input parameters
 if ($CSVFile -eq "")
@@ -1045,7 +1056,7 @@ if ($CSVFile -eq "")
 	}
 	# UCSM is required
 	if ($UCSM -eq "") {
-		Write-Host "Please specify the hostname or IP address of a UCS Manager!"
+		WriteLog "Please specify the hostname or IP address of a UCS Manager!"
 		Exit
 	}
 
@@ -1064,7 +1075,7 @@ if ($CSVFile -eq "")
 		$OutFile = Read-Host "Enter file name for the HTML output file"
 	}
 	if ($OutFile -eq "") {
-		Write-Host "Please specify output file!"
+		WriteLog "Please specify output file!"
 		Exit
 	}
 
@@ -1086,16 +1097,16 @@ else
 
 			# Check input values
 			if ($UCSM -eq "") {
-				Write-Host "Line $line - UCS Manager is empty!"
+				WriteLog "Line $line - UCS Manager is empty!"
 			}
 			elseif ($Username -eq "") {
-				Write-Host "Line $line - Username is empty!"
+				WriteLog "Line $line - Username is empty!"
 			}
 			elseif ($Password -eq "") {
-				Write-Host "Line $line - Password is empty!"
+				WriteLog "Line $line - Password is empty!"
 			}
 			elseif ($OutFile -eq "") {
-				Write-Host "Line $line - OutFile is empty!"
+				WriteLog "Line $line - OutFile is empty!"
 			}
 			else
 			{
@@ -1105,7 +1116,7 @@ else
 	}
 	else
 	{
-		Write-Host "CSV File '$CSVFile' does not exist!"
+		WriteLog "CSV File '$CSVFile' does not exist!"
 		Exit
 	}
 }
