@@ -28,7 +28,7 @@ if($GeneratePassword.IsPresent)
 {
 	$PlainPassword = Read-Host "Please enter your password"
 	$SecurePassword = $PlainPassword | ConvertTo-SecureString -AsPlainText -Force | ConvertFrom-SecureString
-	Write-Host "Done! Here's your encrypted password, save this in the Excel:"
+	Write-Host "Done! Here's your encrypted password, save this in the CSV:"
 	Write-Host $SecurePassword
 	exit;
 }
