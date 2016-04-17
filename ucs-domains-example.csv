@@ -1,0 +1,3 @@
+UCS Manager IP,Outfile,Username,Encrypted Password
+1.1.1.1,ucs-dc1.html,username,0100000verylongencryptedpassword
+ucsmanager.corp.local,ucs-dc2.html,username,0100000verylongencryptedpassword
