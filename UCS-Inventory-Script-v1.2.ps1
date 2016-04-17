@@ -35,10 +35,10 @@ if($GeneratePassword.IsPresent)
 
 function GenerateReport()
 {
-	Param([string]$UCSM,
-				[string]$OutFile,
-				[string]$Username,
-				[string]$Password)
+	Param([Parameter(Mandatory=$true)][string]$UCSM,
+				[Parameter(Mandatory=$true)][string]$OutFile,
+				[Parameter(Mandatory=$true)][string]$Username,
+				[Parameter(Mandatory=$true)][string]$Password)
 
 	Write-Host "UCSM: " $UCSM " - OutFile: " $OutFile " - Username: " $Username " - Password: " $Password
 
@@ -1072,15 +1072,35 @@ if ($CSVFile -eq "")
 }
 else
 {
+	# Check if the CSVFile exists
 	if (Test-Path $CSVFile)
 	{
+		# Run through the CSV file line for line and generate the report for each one
+		$line = 0;
 		Import-Csv $CSVFile | Foreach {
+			$line++
 			$UCSM = $_."UCS Manager IP"
 			$OutFile = $_."Outfile"
 			$Username = $_."Username"
 			$Password = $_."Encrypted Password"
 
-			GenerateReport $UCSM $OutFile $Username $Password
+			# Check input values
+			if ($UCSM -eq "") {
+				Write-Host "Line $line - UCS Manager is empty!"
+			}
+			elseif ($Username -eq "") {
+				Write-Host "Line $line - Username is empty!"
+			}
+			elseif ($Password -eq "") {
+				Write-Host "Line $line - Password is empty!"
+			}
+			elseif ($OutFile -eq "") {
+				Write-Host "Line $line - OutFile is empty!"
+			}
+			else
+			{
+				GenerateReport $UCSM $OutFile $Username $Password
+			}
 		}
 	}
 	else
