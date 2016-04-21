@@ -48,10 +48,22 @@ function GenerateReport()
 	Param([Parameter(Mandatory=$true)][string]$UCSM,
 				[Parameter(Mandatory=$true)][string]$OutFile,
 				[Parameter(Mandatory=$true)][string]$Username,
-				[Parameter(Mandatory=$true)][string]$Password)
+				[Parameter(Mandatory=$true)][string]$Password,
+				[Parameter(Mandatory=$true)][string]$ManualGeneration)
 
 	# Generate credentials
-	$UCSCredentials = New-Object -TypeName System.Management.Automation.PSCredential -argumentlist $Username, ($Password | ConvertTo-SecureString)
+	if($Username -eq "" -or $Password -eq "") {
+		$UCSCredentials = $Host.UI.PromptForCredential("UCS Manager Authentication", "Enter UCS Manager Login", "", "")
+	}
+	else
+	{
+		if($ManualGeneration -eq "manual") {
+			$UCSCredentials = New-Object -TypeName System.Management.Automation.PSCredential -argumentlist $Username, ($Password | ConvertTo-SecureString -AsPlainText -Force)
+		}
+		else {
+			$UCSCredentials = New-Object -TypeName System.Management.Automation.PSCredential -argumentlist $Username, ($Password | ConvertTo-SecureString)
+		}
+	}
 
 	# Create or empty file
 	New-Item -ItemType file $OutFile -Force | Out-Null
@@ -1060,16 +1072,6 @@ if ($CSVFile -eq "")
 		Exit
 	}
 
-	# Gather credentials
-	$UCSCredentials = $null
-	if($Username -eq "" -or $Password -eq "") {
-		$UCSCredentials = $Host.UI.PromptForCredential("UCS Manager Authentication", "Enter UCS Manager Login", "", "")
-	}
-	else {
-		$SecPasswd = ConvertTo-SecureString $Password -AsPlainText -Force
-		$UCSCredentials = New-Object System.Management.Automation.PSCredential ($Username, $SecPasswd)
-	}
-
 	# Prompt for HTML report file output name and path
 	if ($OutFile -eq "") {
 		$OutFile = Read-Host "Enter file name for the HTML output file"
@@ -1079,7 +1081,7 @@ if ($CSVFile -eq "")
 		Exit
 	}
 
-	GenerateReport $UCSM $OutFile $Username $Password
+	GenerateReport $UCSM $OutFile $Username $Password "manual"
 }
 else
 {
@@ -1110,7 +1112,7 @@ else
 			}
 			else
 			{
-				GenerateReport $UCSM $OutFile $Username $Password
+				GenerateReport $UCSM $OutFile $Username $Password "csv"
 			}
 		}
 	}
