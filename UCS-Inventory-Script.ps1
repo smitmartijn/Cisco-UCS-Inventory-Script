@@ -1,5 +1,5 @@
 #
-#	Cisco UCS Inventory Script (UIS) - v1.2 (30-06-2014)
+#	Cisco UCS Inventory Script (UIS) - v1.3 (17-04-2016)
 #	 Martijn Smit <martijn@lostdomain.org>
 #
 #	- Grab all information from a UCS Manager and output it to a file.
@@ -9,8 +9,11 @@
 #
 #   - If Username or Password parameter are omitted, the script will prompt for manual credentials
 #
-# v1.2 - 30-06-2014
-# - Added healthcheck / configuration recommendations
+# v1.3 - 17-04-2016 - Added multiple UCS Manager support via a CSV file and logging to a file.
+# v1.2 - 30-06-2014 - Added a recommendations tab for configuration and health recommendations,
+#                     taken from experience in the field.
+# v1.1 - 30-12-2013 - Add arguments for the require input data, allow it to run as a scheduled task.
+# v1.0 - 25-11-2013 - First version; capture every bit of information from UCS Manager I could think of.
 #
 param([string]$UCSM = $null,
 		[string]$OutFile = $null,
