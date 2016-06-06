@@ -5,7 +5,7 @@ I wrote this script to get an easy overview of UCS installations after completin
 
 It evolved into a script that gets run periodically to retrieve up to date information and serve as attachment to delivery documents.
 
-This script requires an installed PowerShell and Ciscos PowerTool, make sure you have them installed and working before you try running the UCS Inventory Script.
+This script requires an installed PowerShell and Ciscos PowerTool version 2.0.0 or higher, make sure you have them installed and working before you try running the UCS Inventory Script.
 
 ## Running the script
 You can run the script without arguments; it will ask you for the required input. You can also run the script with the arguments required to run. If you want to run it in a scheduled task, run it with all the arguments.
