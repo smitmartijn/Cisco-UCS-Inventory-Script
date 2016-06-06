@@ -24,7 +24,7 @@ param([string]$UCSM = $null,
 		[string]$LogFile = $null)
 
 # Import the Cisco UCS PowerTool module
-Import-Module CiscoUcsPS
+Import-Module Cisco.UCSManager
 
 # Generate an encrypted password from input
 if($GeneratePassword.IsPresent)
