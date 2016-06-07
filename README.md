@@ -1,11 +1,11 @@
 # Cisco UCS Inventory Script
-The UCS Inventory Script (UIS) is a Powertool script that retrieves the full configuration of an UCS Manager (or multiple) and displays it in a very readable and portable HTML file for offline use. It also includes some configuration recommendations that come from experience implementing FlexPods. **Disclaimer**: These recommendations are not official recommendations from Cisco, but taken from experience from the field.
+The UCS Inventory Script (UIS) is a PowerTool script that retrieves the full configuration of an UCS Manager (or multiple) and displays it in a very readable and portable HTML file for offline use. It also includes some configuration recommendations that come from experience implementing FlexPods. **Disclaimer**: These recommendations are not official recommendations from Cisco, but taken from experience from the field.
 
 I wrote this script to get an easy overview of UCS installations after completing the initial build. To answer basic questions like “How many port licenses do we have left?” or “Did we create VLAN X?” – when you have no easy connectivity to the management console.
 
 It evolved into a script that gets run periodically to retrieve up to date information and serve as attachment to delivery documents.
 
-This script requires an installed PowerShell and Ciscos PowerTool version 2.0.0 or higher, make sure you have them installed and working before you try running the UCS Inventory Script.
+This script requires an installed PowerShell and Ciscos PowerTool version 1 or 2, make sure you have them installed and working before you try running the UCS Inventory Script.
 
 ## Running the script
 You can run the script without arguments; it will ask you for the required input. You can also run the script with the arguments required to run. If you want to run it in a scheduled task, run it with all the arguments.
@@ -49,7 +49,7 @@ If there are any changes you’d like to see, more information or other recommen
 ## Changelog
 ```
 v1.3 - 17-04-2016 - Added multiple UCS Manager support via a CSV file and logging to a file.
-v1.2 - 30-06-2014 - Added a recommendations tab for configuration and health recommendations, 
+v1.2 - 30-06-2014 - Added a recommendations tab for configuration and health recommendations,
                     taken from experience in the field.  
 v1.1 - 30-12-2013 - Add arguments for the require input data, allow it to run as a scheduled task.  
 v1.0 - 25-11-2013 - First version; capture every bit of information from UCS Manager I could think of.
