@@ -23,8 +23,27 @@ param([string]$UCSM = $null,
 		[string]$CSVFile = $null,
 		[string]$LogFile = $null)
 
-# Import the Cisco UCS PowerTool module
-Import-Module CiscoUcsPS
+# Import the Cisco UCS PowerTool module, search for version 1 and version 2 and load which one we find
+if(!(Get-Module -ListAvailable -Name Cisco.UCSManager))
+{
+	# Version 2 not found, look for version 1
+	if(!(Get-Module -ListAvailable -Name CiscoUcsPS))
+	{
+		Write-Host "Cisco UCS PowerTool version 1 or 2 not found!" -ForegroundColor "red"
+		Exit
+	}
+	else {
+		# Load PowerTool 1.x
+		Import-Module CiscoUcsPS
+		Write-Host "Cisco UCS PowerTool version 1.x loaded" -ForegroundColor "yellow"
+	}
+}
+else {
+	# Load PowerTool 2.x
+	Import-Module Cisco.UCSManager
+	Write-Host "Cisco UCS PowerTool version 2.x loaded" -ForegroundColor "yellow"
+}
+
 
 # Generate an encrypted password from input
 if($GeneratePassword.IsPresent)
