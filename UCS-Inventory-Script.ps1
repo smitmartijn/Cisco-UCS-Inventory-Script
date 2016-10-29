@@ -931,7 +931,7 @@ function GenerateReport()
 	}
 
 	$recommendationText = "Port licenses on Fabric A are sufficient?"
-	if($licenseFabricA_Abs -gt $licenseFabricA_Used) {
+	if($licenseFabricA_Abs -ge $licenseFabricA_Used) {
 		$licenseFabricA_Abs -= $licenseFabricA_Used
 		AddToOutput -txt "<tr><td>$recommendationText</td><td style='background-color: green'>Yes ($licenseFabricA_Abs left)</td></tr>"
 	}
@@ -940,7 +940,7 @@ function GenerateReport()
 	}
 
 	$recommendationText = "Port licenses on Fabric B are sufficient?"
-	if($licenseFabricB_Abs -gt $licenseFabricB_Used) {
+	if($licenseFabricB_Abs -ge $licenseFabricB_Used) {
 		$licenseFabricB_Abs -= $licenseFabricB_Used
 		AddToOutput -txt "<tr><td>$recommendationText</td><td style='background-color: green'>Yes ($licenseFabricB_Abs left)</td></tr>"
 	}
