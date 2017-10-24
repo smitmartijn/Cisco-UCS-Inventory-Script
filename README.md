@@ -16,6 +16,8 @@ You can run the script without arguments; it will ask you for the required input
 * -Username: Username used to login to UCS Manager
 * -Password: Password used to login to UCS Manager
 
+NOTE: If a UCSM authentication domain is used in your environment, the username provided will be "ucs-<AUTHDOMAIN>\<Username>"
+
 ## Multiple UCS Managers
 **OR** you can use a CSV file with the information about multiple UCS Managers. The command looks a bit different in that case:
 
