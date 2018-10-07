@@ -236,8 +236,17 @@ function GenerateReport()
 	AddToOutput -txt "<div class='content-sub' id='equipment-tab-servers'>"
 
 	# Get all UCS servers and server info
-	AddToOutput -txt "<h2>Server Inventory</h2>"
-	$Global:TMP_OUTPUT += Get-UcsBlade | Sort-Object -Property ChassisID,SlotID | Select-Object ServerId,Model,AvailableMemory,NumOfCpus,NumOfCores,NumOfAdaptors,NumOfEthHostIfs,NumOfFcHostIfs,AssignedToDn,Presence,OperState,Operability,OperPower,Serial | ConvertTo-Html -Fragment
+
+	# Does the system have blade servers? return those
+	if (Get-UcsBlade) {
+		AddToOutput -txt "<h2>Server Inventory - Blades</h2>"
+		$Global:TMP_OUTPUT += Get-UcsBlade | Select-Object ServerId,Model,AvailableMemory,@{N='CPUs';E={$_.NumOfCpus}},@{N='Cores';E={$_.NumOfCores}},@{N='Adaptors';E={$_.NumOfAdaptors}},@{N='eNICs';E={$_.NumOfEthHostIfs}},@{N='fNICs';E={$_.NumOfFcHostIfs}},AssignedToDn,OperPower,Serial | Sort-Object -Property ChassisID,SlotID | ConvertTo-Html -Fragment
+	}
+	# Does the system have rack servers? return those
+	if (Get-UcsRackUnit) {
+		AddToOutput -txt "<h2>Server Inventory - Rack-mounts</h2>"
+		$Global:TMP_OUTPUT += Get-UcsRackUnit | Select-Object ServerId,Model,AvailableMemory,@{N='CPUs';E={$_.NumOfCpus}},@{N='Cores';E={$_.NumOfCores}},@{N='Adaptors';E={$_.NumOfAdaptors}},@{N='eNICs';E={$_.NumOfEthHostIfs}},@{N='fNICs';E={$_.NumOfFcHostIfs}},AssignedToDn,OperPower,Serial | Sort-Object { [int]$_.ServerId } | ConvertTo-Html -Fragment
+	}
 
 	# Get server adaptor (mezzanine card) info
 	AddToOutput -txt "<h2>Server Adaptor Inventory</h2>"
@@ -288,7 +297,7 @@ function GenerateReport()
 
 	# Get Server BIOS versions
 	AddToOutput -txt "<h2>Server BIOS</h2>"
-	$Global:TMP_OUTPUT += Get-UcsFirmwareRunning | Select-Object Dn,Type,Version | Sort-Object -Property Dn | Where-Object {$_.Type -eq "blade-bios"} | ConvertTo-Html -Fragment
+	$Global:TMP_OUTPUT += Get-UcsFirmwareRunning | Select-Object Dn,Type,Version | Sort-Object -Property Dn | Where-Object {$_.Type -eq "blade-bios" -Or $_.Type -eq "rack-bios"} | ConvertTo-Html -Fragment
 
 	# Get Host Firmware Packages
 	AddToOutput -txt "<h2>Host Firmware Packages</h2>"
@@ -805,11 +814,11 @@ function GenerateReport()
 	AddToOutput -txt "<h2>Chassis IOM Temperatures</h2>"
 	$Global:TMP_OUTPUT += Get-UcsEquipmentIOCardStats | Sort-Object -Property Dn | Select-Object Dn,AmbientTemp,AmbientTempAvg,Temp,TempAvg,Suspect | ConvertTo-Html -Fragment
 
-	# Get blade power usage
+	# Get server power usage
 	AddToOutput -txt "<h2>Server Power</h2>"
 	$Global:TMP_OUTPUT += Get-UcsComputeMbPowerStats | Sort-Object -Property Dn | Select-Object Dn,ConsumedPower,ConsumedPowerAvg,ConsumedPowerMax,InputCurrent,InputCurrentAvg,InputVoltage,InputVoltageAvg,Suspect | ConvertTo-Html -Fragment
 
-	# Get blade temperatures
+	# Get server temperatures
 	AddToOutput -txt "<h2>Server Temperatures</h2>"
 	$Global:TMP_OUTPUT += Get-UcsComputeMbTempStats | Sort-Object -Property Dn | Select-Object Dn,FmTempSenIo,FmTempSenIoAvg,FmTempSenIoMax,FmTempSenRear,FmTempSenRearAvg,FmTempSenRearMax,Suspect | ConvertTo-Html -Fragment
 
