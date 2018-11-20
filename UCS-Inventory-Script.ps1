@@ -788,7 +788,7 @@ function GenerateReport()
 
 	# Get all UCS Faults sorted by severity
 	AddToOutput -txt "<h2>Faults</h2>"
-	$Global:TMP_OUTPUT += Get-UcsFault | Sort-Object Sort-Object -Property @{Expression = {$_.Severity}; Ascending = $true}, Created -Descending | Select-Object Severity,Created,Descr,dn | ConvertTo-Html -Fragment
+	$Global:TMP_OUTPUT += Get-UcsFault | Sort-Object -Property @{Expression = {$_.Severity}; Ascending = $true}, Created -Descending | Select-Object Severity,Created,Descr,dn | ConvertTo-Html -Fragment
 
 	AddToOutput -txt "</div>" # end subtab
 	AddToOutput -txt "<div class='content-sub' id='stats-tab-equip'>"
