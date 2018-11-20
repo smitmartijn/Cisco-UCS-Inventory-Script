@@ -69,8 +69,8 @@ function GenerateReport()
 {
 	Param([Parameter(Mandatory=$true)][string]$UCSM,
 				[Parameter(Mandatory=$true)][string]$OutFile,
-				[Parameter(Mandatory=$true)][string]$Username,
-				[Parameter(Mandatory=$true)][string]$Password,
+				[Parameter(Mandatory=$false)][string]$Username,
+				[Parameter(Mandatory=$false)][string]$Password,
 				[Parameter(Mandatory=$true)][string]$ManualGeneration)
 
 	# Generate credentials
